@@ -19,8 +19,6 @@ queries1 = [
     'курс по питону',
     'сериалы про спорт',
 ]
-
 queries2 = []
-
 print_query_statistic(queries1)
 print_query_statistic(queries2)
