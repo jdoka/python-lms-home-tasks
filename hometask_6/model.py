@@ -13,7 +13,7 @@ class Account:
 class AccountOperation:
     def __init__(self, account: Account, value: int):
         if value <= 0:
-            raise Exception(f"Некорректное значение суммы операции(отрицательная): {value}")
+            raise Exception(f"Некорректное значение суммы операции(не положительная): {value}")
         self.account = account
         self.value = value
 
@@ -22,6 +22,29 @@ class AccountOperation:
 
     def undo(self):
         pass
+
+
+class UpAccountOperation(AccountOperation):
+
+    def do(self):
+        self.account.balance += self.value
+
+    def undo(self):
+        self.account.balance -= self.value
+
+
+class WithdrawAccountOperation(AccountOperation):
+
+    def __init__(self, account: Account, value: int):
+        if account.balance - value < 0:
+            raise Exception(f"Недостаточно средств для проведения операции по счету {account.name}")
+        super().__init__(account, value)
+
+    def do(self):
+        self.account.balance -= self.value
+
+    def undo(self):
+        self.account.balance += self.value
 
 
 class Account:
@@ -41,36 +64,8 @@ class Account:
     def cancel_last_operation(self):
         if not self.history:
             raise Exception(f"У счета {self.name} отсутствуют выполненные операции")
-        operation = self.history.pop()
-        operation.undo()
+        self.history.pop().undo()
 
     def __do_operation(self, operation: AccountOperation):
         operation.do()
         self.history.append(operation)
-
-
-class UpAccountOperation(AccountOperation):
-
-    def do(self):
-        new_value = self.account.balance + self.value
-        self.account.balance = new_value
-
-    def undo(self):
-        new_value = self.account.balance - self.value
-        self.account.balance = new_value
-
-
-class WithdrawAccountOperation(AccountOperation):
-
-    def __init__(self, account: Account, value: int):
-        if account.balance - value < 0:
-            raise Exception(f"Недостаточно средств для проведения операции по счету {account.name}")
-        super().__init__(account, value)
-
-    def do(self):
-        new_value = self.account.balance - self.value
-        self.account.balance = new_value
-
-    def undo(self):
-        new_value = self.account.balance + self.value
-        self.account.balance = new_value
