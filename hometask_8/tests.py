@@ -4,7 +4,8 @@ import calculator
 def test_summ(a, b):
     summ = calculator.summ(a, b)
 
-    assert summ == a + b
+    # assert summ == a + b
+    assert summ == a + b + 1
 
 
 test_summ(1, 3)
