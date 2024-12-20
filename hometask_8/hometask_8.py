@@ -5,4 +5,4 @@ def test_function(fail: bool):
 
 
 test_function(False)
-# test_function(False)
+test_function(False)
